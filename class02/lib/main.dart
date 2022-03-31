@@ -1,6 +1,4 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:ui';
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
 
@@ -63,19 +61,37 @@ class _MyAppState extends State<MyApp> {
 }
 
 class ProductListView extends StatelessWidget {
-  final String? productLabel;
+  final googleProducts = GoogleProducts();
 
-  const ProductListView({Key? key, this.productLabel}) : super(key: key);
+  ProductListView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: googleProducts.items.length,
+      itemBuilder: (context, index) {
+        return Card(child: ProductListTile([googleProducts.items[index], index]));
+      },
+    );
+  }
+}
+
+///googleProducts.items[index]
+class ProductListTile extends StatelessWidget {
+  final List productLabel;
+
+  const ProductListTile(this.productLabel, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        '$productLabel',
+        productLabel[0],
         style: TextStyle(color: Colors.black),
       ),
-      subtitle: Text('subtitle', style: TextStyle(color: Colors.black)),
-      leading: Icon(Icons.help_center_outlined, color: Colors.black),
+      subtitle: Text('The subtitle ' + productLabel[1].toString(), style: TextStyle(color: Colors.black)),
+      leading: Icon(Icons.share, color: Colors.black),
+      tileColor: Colors.green,
       onTap: () {
         /// show snack bar
         final snackBar = SnackBar(content: Text('you selected $productLabel'));
@@ -83,7 +99,7 @@ class ProductListView extends StatelessWidget {
 
         /// end show snack bar
         /// Navigator for another page
-        Navigator.push(context, MaterialPageRoute(builder: ((context) => MyDetails())));
+        Navigator.push(context, MaterialPageRoute(builder: ((context) => MyDetails(productLabel[0]))));
 
         /// end Navigator for another page
       },
@@ -95,7 +111,9 @@ class ProductListView extends StatelessWidget {
 /// MyDetails()-Page
 ///
 class MyDetails extends StatefulWidget {
-  const MyDetails({Key? key}) : super(key: key);
+  final String lastdata;
+
+  MyDetails(this.lastdata, {Key? key}) : super(key: key);
 
   @override
   State<MyDetails> createState() => _MyDetailsState();
@@ -108,13 +126,35 @@ class _MyDetailsState extends State<MyDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.grey),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: [AppBarActionShare()],
-          title: Text(
-            title,
-          )),
+        iconTheme: IconThemeData(color: Colors.grey),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [AppBarActionShare()],
+        title: Text(
+          title,
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      body: Center(
+        child: Text('Helo Details Page ' + widget.lastdata),
+      ),
+    );
+  }
+}
+
+class AppBarActionShare extends StatelessWidget {
+  const AppBarActionShare({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.share),
+      onPressed: () {
+        final snackBar = SnackBar(
+          content: Text('you selected the Share Action.'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
     );
   }
 }
