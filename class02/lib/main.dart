@@ -54,8 +54,49 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title, style: TextStyle(color: Colors.black))),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.black),
+        ),
+        leading: AppBarLeading(),
+        actions: [AppBarActionShare()],
+      ),
       body: ProductListView(),
+    );
+  }
+}
+
+class AppBarLeading extends StatelessWidget {
+  const AppBarLeading({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.menu,
+      ),
+      onPressed: () {
+        debugPrint('you hit menu');
+      },
+    );
+  }
+}
+
+class AppBarActionShare extends StatelessWidget {
+  const AppBarActionShare({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.share),
+      onPressed: () {
+        final snackBar = SnackBar(
+          content: Text('you selected the Share Action.'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
     );
   }
 }
@@ -138,23 +179,6 @@ class _MyDetailsState extends State<MyDetails> {
       body: Center(
         child: Text('Helo Details Page ' + widget.lastdata),
       ),
-    );
-  }
-}
-
-class AppBarActionShare extends StatelessWidget {
-  const AppBarActionShare({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.share),
-      onPressed: () {
-        final snackBar = SnackBar(
-          content: Text('you selected the Share Action.'),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
     );
   }
 }
